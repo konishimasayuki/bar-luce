@@ -177,8 +177,8 @@ export default function App() {
   );
 
   return(
-    <div style={{background:Z.bg,color:Z.txt,fontFamily:"'DM Sans',sans-serif",
-      height:"100vh",display:"flex",flexDirection:"column",maxWidth:448,margin:"0 auto",position:"relative"}}>
+    <div className="app-root" style={{background:Z.bg,color:Z.txt,fontFamily:"'DM Sans',sans-serif",
+      display:"flex",flexDirection:"column",maxWidth:448,margin:"0 auto",position:"relative",overflow:"hidden"}}>
       <style>{`
         .fdp{font-family:'Playfair Display',serif} .fdpi{font-family:'Playfair Display',serif;font-style:italic}
         *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -193,7 +193,7 @@ export default function App() {
         .scan-line{position:absolute;left:0;right:0;height:2px;background:rgba(217,119,6,.85);animation:scanline 2s ease-in-out infinite}
       `}</style>
 
-      <div style={{flex:1,overflowY:"auto",paddingBottom:64}}>
+      <div style={{flex:1,overflowY:"auto",paddingBottom:"calc(64px + env(safe-area-inset-bottom))"}}>
         {tab==="home"      && <DashboardTab products={products} sessions={sessions} sales={sales} active={active} onStart={startSession} onNav={setTab}/>}
         {tab==="products"  && <ProductsTab  products={products} onAdd={addProduct} onDel={delProduct}/>}
         {tab==="inventory" && <InventoryTab products={products} sessions={sessions} session={active}
@@ -202,8 +202,10 @@ export default function App() {
         {tab==="sales"     && <SalesTab products={products} sales={sales} onAdd={addSale} onDel={delSale}/>}
       </div>
 
-      <nav style={{position:"absolute",bottom:0,left:0,right:0,background:Z.white,
-        borderTop:`1px solid ${Z.bdr}`,display:"grid",gridTemplateColumns:"repeat(4,1fr)",zIndex:50}}>
+      <nav style={{position:"fixed",bottom:0,left:"50%",transform:"translateX(-50%)",
+        width:"100%",maxWidth:448,background:Z.white,
+        borderTop:`1px solid ${Z.bdr}`,display:"grid",gridTemplateColumns:"repeat(4,1fr)",zIndex:50,
+        paddingBottom:"env(safe-area-inset-bottom)"}}>
         {[
           {id:"home",     Icon:Home,       label:"ダッシュ"},
           {id:"products", Icon:Package,    label:"商品"},
@@ -418,66 +420,101 @@ function ProductsTab({products,onAdd,onDel}){
    CAMERA SCANNER
 ═══════════════════════════════════════════════════════════ */
 function CameraScanner({onScan,onClose}){
-  const videoRef=useRef(null); const activeRef=useRef(true);
-  const [status,setStatus]=useState("starting"); const [errMsg,setErrMsg]=useState(""); const [janInput,setJanInput]=useState("");
+  const [status,setStatus]=useState("loading");
+  const [error,setError]=useState("");
+  const [janInput,setJanInput]=useState("");
+  const scannerRef=useRef(null);
+  const doneRef=useRef(false);
+  const READER_ID="bar-luce-qr-reader";
+
   useEffect(()=>{
-    let stream=null;
+    let mounted=true;
     const start=async()=>{
-      if(!("BarcodeDetector" in window)){setStatus("unsupported");return;}
       try{
-        stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}});
-        if(!videoRef.current)return;
-        videoRef.current.srcObject=stream; await videoRef.current.play(); setStatus("scanning");
-        const det=new BarcodeDetector({formats:["ean_13","ean_8","upc_a","upc_e"]});
-        while(activeRef.current){
-          try{ if(videoRef.current?.readyState>=2){ const bc=await det.detect(videoRef.current); if(bc.length>0&&activeRef.current){onScan(bc[0].rawValue);return;} } }catch{}
-          await new Promise(r=>setTimeout(r,200));
-        }
-      }catch(e){ setErrMsg(e.name==="NotAllowedError"?"カメラへのアクセスが拒否されました":"カメラを起動できませんでした"); setStatus("error"); }
+        // 動的インポート: Safari含む全ブラウザ対応
+        const {Html5Qrcode}=await import('html5-qrcode');
+        if(!mounted)return;
+        const scanner=new Html5Qrcode(READER_ID);
+        scannerRef.current=scanner;
+        await scanner.start(
+          {facingMode:"environment"},
+          {fps:10,qrbox:(w,h)=>({width:Math.min(260,Math.floor(w*.78)),height:Math.min(120,Math.floor(h*.38))})},
+          (code)=>{
+            if(!doneRef.current&&mounted){
+              doneRef.current=true;
+              scanner.stop().finally(()=>onScan(code));
+            }
+          },
+          ()=>{}
+        );
+        if(mounted)setStatus("scanning");
+      }catch(e){
+        if(!mounted)return;
+        const n=e?.name||""; const m=e?.message||"";
+        if(n==="NotAllowedError"||m.includes("NotAllowed"))setError("カメラへのアクセスが拒否されました");
+        else if(n==="NotFoundError"||m.includes("NotFound"))setError("カメラが見つかりません");
+        else setError("カメラを起動できませんでした");
+        setStatus("error");
+      }
     };
     start();
-    return()=>{activeRef.current=false;stream?.getTracks().forEach(t=>t.stop());};
+    return()=>{
+      mounted=false;
+      try{scannerRef.current?.stop().catch(()=>{});}catch{}
+    };
   },[]);
+
   return(
     <div style={{position:"fixed",inset:0,zIndex:200,background:"#000",display:"flex",flexDirection:"column"}}>
-      <div style={{position:"absolute",top:0,left:0,right:0,zIndex:10,padding:"16px 20px",background:"linear-gradient(to bottom,rgba(0,0,0,.7),transparent)",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+      <div style={{flexShrink:0,padding:"env(safe-area-inset-top, 16px) 20px 12px",display:"flex",justifyContent:"space-between",alignItems:"center",zIndex:1,position:"relative",paddingTop:"max(env(safe-area-inset-top), 16px)"}}>
         <p style={{color:"#fff",fontSize:13,fontWeight:600,margin:0}}>バーコードをスキャン</p>
-        <button onClick={onClose} style={{color:"#fff",background:"rgba(255,255,255,.15)",borderRadius:"50%",width:32,height:32,display:"flex",alignItems:"center",justifyContent:"center"}}><X size={16}/></button>
+        <button onClick={onClose} style={{color:"#fff",background:"rgba(255,255,255,.15)",borderRadius:"50%",width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center"}}><X size={18}/></button>
       </div>
-      {(status==="starting"||status==="scanning")&&<video ref={videoRef} style={{width:"100%",height:"100%",objectFit:"cover"}} muted playsInline/>}
-      {status==="scanning"&&(
-        <div style={{position:"absolute",inset:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:16}}>
-          <div style={{position:"relative",width:260,height:160}}>
-            <div style={{position:"absolute",inset:-2000,background:"rgba(0,0,0,.5)"}}/>
-            <div style={{position:"relative",width:"100%",height:"100%",border:"2px solid rgba(255,255,255,.8)",borderRadius:10,overflow:"hidden"}}>
-              <div className="scan-line"/>
-              {[[0,0],[0,1],[1,0],[1,1]].map(([b,r],i)=>(
-                <div key={i} style={{position:"absolute",width:20,height:20,top:b?undefined:0,left:r?undefined:0,bottom:b?0:undefined,right:r?0:undefined,borderTop:!b?`3px solid ${Z.amb}`:undefined,borderLeft:!r?`3px solid ${Z.amb}`:undefined,borderBottom:b?`3px solid ${Z.amb}`:undefined,borderRight:r?`3px solid ${Z.amb}`:undefined}}/>
-              ))}
+
+      {(status==="loading"||status==="scanning")&&(
+        <div style={{flex:1,position:"relative",overflow:"hidden"}}>
+          <div id={READER_ID} style={{position:"absolute",inset:0}}/>
+          {/* オーバーレイ */}
+          <div style={{position:"absolute",inset:0,pointerEvents:"none",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:16}}>
+            <div style={{position:"relative",width:260,height:120}}>
+              <div style={{position:"absolute",inset:-2000,background:"rgba(0,0,0,.45)"}}/>
+              <div style={{position:"relative",width:"100%",height:"100%",border:"2px solid rgba(255,255,255,.8)",borderRadius:8,overflow:"hidden"}}>
+                <div className="scan-line"/>
+                {[[0,0],[0,1],[1,0],[1,1]].map(([b,r],i)=>(
+                  <div key={i} style={{position:"absolute",width:18,height:18,top:b?undefined:0,left:r?undefined:0,bottom:b?0:undefined,right:r?0:undefined,borderTop:!b?`3px solid ${Z.amb}`:undefined,borderLeft:!r?`3px solid ${Z.amb}`:undefined,borderBottom:b?`3px solid ${Z.amb}`:undefined,borderRight:r?`3px solid ${Z.amb}`:undefined}}/>
+                ))}
+              </div>
             </div>
+            <p style={{color:"rgba(255,255,255,.9)",fontSize:13,margin:0,textShadow:"0 1px 4px rgba(0,0,0,.8)"}}>{status==="loading"?"カメラを起動中...":"バーコードを枠内に向けてください"}</p>
           </div>
-          <p style={{color:"rgba(255,255,255,.85)",fontSize:13,margin:0}}>バーコードを枠内に向けてください</p>
+          {status==="loading"&&(
+            <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(0,0,0,.7)"}}>
+              <div className="spin" style={{width:36,height:36,border:"3px solid rgba(255,255,255,.25)",borderTopColor:"#fff",borderRadius:"50%"}}/>
+            </div>
+          )}
         </div>
       )}
-      {status==="starting"&&<div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(0,0,0,.6)"}}><div style={{textAlign:"center",color:"#fff"}}><div className="spin" style={{width:32,height:32,border:"3px solid rgba(255,255,255,.3)",borderTopColor:"#fff",borderRadius:"50%",margin:"0 auto 12px"}}/><p style={{margin:0,fontSize:13}}>カメラを起動中...</p></div></div>}
-      {(status==="error"||status==="unsupported")&&(
-        <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:32,gap:12,background:"#111"}}>
-          <div style={{fontSize:40}}>📷</div>
-          <p style={{color:"#fff",fontWeight:600,textAlign:"center",margin:0,fontSize:14}}>{status==="unsupported"?"Chrome/Edgeをご利用ください":errMsg}</p>
-          <p style={{color:"rgba(255,255,255,.6)",fontSize:12,margin:0}}>JANコードを直接入力</p>
-          <div style={{display:"flex",gap:8,width:"100%",maxWidth:300}}>
-            <input value={janInput} onChange={e=>setJanInput(e.target.value)} onKeyDown={e=>e.key==="Enter"&&janInput.trim()&&onScan(janInput.trim())} placeholder="4901777302180" autoFocus style={{flex:1,background:"rgba(255,255,255,.1)",border:"1px solid rgba(255,255,255,.2)",borderRadius:10,padding:"10px 12px",fontSize:13,color:"#fff",fontFamily:"monospace"}}/>
-            <button onClick={()=>janInput.trim()&&onScan(janInput.trim())} style={{background:Z.amb,color:"#fff",borderRadius:10,padding:"0 14px",fontWeight:600,fontSize:13}}>検索</button>
+
+      {status==="error"&&(
+        <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:32,gap:14,background:"#111"}}>
+          <div style={{fontSize:48}}>📷</div>
+          <p style={{color:"#fff",fontWeight:600,textAlign:"center",margin:0,fontSize:15,lineHeight:1.6}}>{error}</p>
+          <p style={{color:"rgba(255,255,255,.55)",fontSize:13,margin:0,textAlign:"center"}}>JANコードを直接入力してください</p>
+          <div style={{display:"flex",gap:8,width:"100%",maxWidth:320}}>
+            <input value={janInput} onChange={e=>setJanInput(e.target.value)}
+              onKeyDown={e=>e.key==="Enter"&&janInput.trim()&&onScan(janInput.trim())}
+              placeholder="4901777302180" autoFocus
+              style={{flex:1,background:"rgba(255,255,255,.12)",border:"1px solid rgba(255,255,255,.25)",borderRadius:10,padding:"12px 14px",fontSize:16,color:"#fff",fontFamily:"monospace"}}/>
+            <button onClick={()=>janInput.trim()&&onScan(janInput.trim())}
+              style={{background:Z.amb,color:"#fff",borderRadius:10,padding:"0 16px",fontWeight:600,fontSize:14,flexShrink:0}}>
+              検索
+            </button>
           </div>
         </div>
       )}
     </div>
   );
 }
-
-/* ═══════════════════════════════════════════════════════════
-   ADD MODAL
-═══════════════════════════════════════════════════════════ */
 function AddModal({onClose,onAdd,prefill={}}){
   const [form,setForm]=useState({jan:prefill.jan||"",name:prefill.name||"",category:prefill.category||"ビール",unit:"本",cost:"",price:""});
   const set=(k,v)=>setForm(f=>({...f,[k]:v})); const ok=form.jan.trim()&&form.name.trim();
