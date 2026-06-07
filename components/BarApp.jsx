@@ -9,50 +9,129 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 
 
 /* ═══ SAMPLE DATA ════════════════════════════════════════════ */
 const SEED_P = [
-  { id:"s1", jan:"4901777302180", name:"サントリー 角瓶 700ml",      category:"ウイスキー",  unit:"本", cost:1800, price:3500 },
-  { id:"s2", jan:"4904230013009", name:"アサヒ スーパードライ 350ml", category:"ビール",      unit:"缶", cost:140,  price:550  },
-  { id:"s3", jan:"4901411001016", name:"キリン 一番搾り 350ml",       category:"ビール",      unit:"缶", cost:130,  price:500  },
-  { id:"s4", jan:"4994566013109", name:"黒霧島 芋 900ml",             category:"焼酎",        unit:"本", cost:850,  price:2200 },
-  { id:"s5", jan:"4901085641606", name:"山崎 12年 700ml",             category:"ウイスキー",  unit:"本", cost:5200, price:8000 },
-  { id:"s6", jan:"4998603001027", name:"メルシャン 赤 750ml",         category:"ワイン",      unit:"本", cost:980,  price:2800 },
+  { id:"p1", jan:"4904230013009", name:"アサヒ スーパードライ 350ml", category:"ビール", unit:"缶", cost:140, price:550 },
+  { id:"p2", jan:"4904230014006", name:"アサヒ スーパードライ 500ml", category:"ビール", unit:"缶", cost:185, price:700 },
+  { id:"p3", jan:"4901411001016", name:"キリン 一番搾り 350ml", category:"ビール", unit:"缶", cost:130, price:550 },
+  { id:"p4", jan:"4901411001023", name:"キリン 一番搾り 500ml", category:"ビール", unit:"缶", cost:175, price:700 },
+  { id:"p5", jan:"4901880903019", name:"サッポロ 黒ラベル 350ml", category:"ビール", unit:"缶", cost:135, price:550 },
+  { id:"p6", jan:"4901880903026", name:"サッポロ 黒ラベル 500ml", category:"ビール", unit:"缶", cost:180, price:700 },
+  { id:"p7", jan:"4901777211253", name:"サントリー プレミアムモルツ 350ml", category:"ビール", unit:"缶", cost:175, price:650 },
+  { id:"p8", jan:"4901777211260", name:"サントリー プレミアムモルツ 500ml", category:"ビール", unit:"缶", cost:230, price:850 },
+  { id:"p9", jan:"4901055620016", name:"ヱビスビール 350ml", category:"ビール", unit:"缶", cost:165, price:650 },
+  { id:"p10", jan:"4901055620023", name:"ヱビスビール 500ml", category:"ビール", unit:"缶", cost:220, price:850 },
+  { id:"p11", jan:"4904011100014", name:"オリオンドラフト 350ml", category:"ビール", unit:"缶", cost:145, price:600 },
+  { id:"p12", jan:"4560141460015", name:"コロナ エキストラ 355ml", category:"ビール", unit:"缶", cost:195, price:750 },
+  { id:"p13", jan:"4524110106002", name:"ハイネケン 330ml", category:"ビール", unit:"缶", cost:185, price:750 },
+  { id:"p14", jan:"4560141490012", name:"ギネス スタウト 330ml", category:"ビール", unit:"缶", cost:210, price:800 },
+  { id:"p15", jan:"4562398580019", name:"よなよなエール 350ml", category:"ビール", unit:"缶", cost:250, price:900 },
+  { id:"p16", jan:"4562398580026", name:"インドの青鬼 IPA 350ml", category:"ビール", unit:"缶", cost:270, price:950 },
+  { id:"p17", jan:"4901880953014", name:"サッポロ ラガービール 350ml", category:"ビール", unit:"缶", cost:130, price:550 },
+  { id:"p18", jan:"4904230503018", name:"アサヒ ドライゼロ 350ml", category:"ビール", unit:"缶", cost:110, price:500 },
+  { id:"p19", jan:"4901777213028", name:"プレモル マスターズドリーム 370ml", category:"ビール", unit:"缶", cost:215, price:800 },
+  { id:"p20", jan:"4901411031013", name:"キリン ラガービール 350ml", category:"ビール", unit:"缶", cost:125, price:550 },
+  { id:"p21", jan:"4901777302180", name:"サントリー 角瓶 700ml", category:"ウイスキー", unit:"本", cost:1800, price:3500 },
+  { id:"p22", jan:"4901777302075", name:"サントリー 白角 700ml", category:"ウイスキー", unit:"本", cost:1600, price:3200 },
+  { id:"p23", jan:"4901085641606", name:"山崎 12年 700ml", category:"ウイスキー", unit:"本", cost:5200, price:8000 },
+  { id:"p24", jan:"4901085641590", name:"山崎 NAS 700ml", category:"ウイスキー", unit:"本", cost:3800, price:6500 },
+  { id:"p25", jan:"4901085641613", name:"白州 12年 700ml", category:"ウイスキー", unit:"本", cost:4800, price:7500 },
+  { id:"p26", jan:"4901085641620", name:"白州 NAS 700ml", category:"ウイスキー", unit:"本", cost:3600, price:6000 },
+  { id:"p27", jan:"4901085641644", name:"響 17年 700ml", category:"ウイスキー", unit:"本", cost:18000, price:25000 },
+  { id:"p28", jan:"4901085641651", name:"響 BLENDER\'S CHOICE 700ml", category:"ウイスキー", unit:"本", cost:4200, price:7000 },
+  { id:"p29", jan:"4904230701019", name:"ニッカ 竹鶴 17年 700ml", category:"ウイスキー", unit:"本", cost:7500, price:12000 },
+  { id:"p30", jan:"4904230701002", name:"ニッカ 竹鶴 NAS 700ml", category:"ウイスキー", unit:"本", cost:3200, price:5500 },
+  { id:"p31", jan:"4904230810017", name:"ニッカ フロム・ザ・バレル 500ml", category:"ウイスキー", unit:"本", cost:2800, price:4800 },
+  { id:"p32", jan:"4904230401016", name:"ニッカ ブラックニッカ クリア 700ml", category:"ウイスキー", unit:"本", cost:950, price:2000 },
+  { id:"p33", jan:"4901085627401", name:"キリン 富士山麓 50° 700ml", category:"ウイスキー", unit:"本", cost:2200, price:4000 },
+  { id:"p34", jan:"5010314310101", name:"マッカラン 12年 700ml", category:"ウイスキー", unit:"本", cost:4500, price:7500 },
+  { id:"p35", jan:"5000299213734", name:"グレンリベット 12年 700ml", category:"ウイスキー", unit:"本", cost:3200, price:5500 },
+  { id:"p36", jan:"5000289026108", name:"グレンフィディック 12年 700ml", category:"ウイスキー", unit:"本", cost:3000, price:5000 },
+  { id:"p37", jan:"5010326031027", name:"ラフロイグ 10年 700ml", category:"ウイスキー", unit:"本", cost:3500, price:6000 },
+  { id:"p38", jan:"5010326031034", name:"アードベッグ 10年 700ml", category:"ウイスキー", unit:"本", cost:4200, price:7000 },
+  { id:"p39", jan:"5021349009052", name:"グレンモーレンジィ 10年 700ml", category:"ウイスキー", unit:"本", cost:3600, price:6000 },
+  { id:"p40", jan:"4901045140018", name:"ジャックダニエル ブラック 700ml", category:"ウイスキー", unit:"本", cost:1800, price:3500 },
+  { id:"p41", jan:"4901045140025", name:"ジャックダニエル シングルバレル 700ml", category:"ウイスキー", unit:"本", cost:4500, price:8000 },
+  { id:"p42", jan:"4523091056018", name:"メーカーズマーク 700ml", category:"ウイスキー", unit:"本", cost:2200, price:4000 },
+  { id:"p43", jan:"4523091115012", name:"ワイルドターキー 8年 700ml", category:"ウイスキー", unit:"本", cost:2400, price:4200 },
+  { id:"p44", jan:"5010106113218", name:"バランタイン 17年 700ml", category:"ウイスキー", unit:"本", cost:6500, price:10000 },
+  { id:"p45", jan:"5000267024007", name:"ジョニーウォーカー ブラック 700ml", category:"ウイスキー", unit:"本", cost:2200, price:4000 },
+  { id:"p46", jan:"4998603001027", name:"メルシャン フランジア 赤 750ml", category:"ワイン", unit:"本", cost:980, price:2800 },
+  { id:"p47", jan:"4998603001034", name:"メルシャン フランジア 白 750ml", category:"ワイン", unit:"本", cost:980, price:2800 },
+  { id:"p48", jan:"4998603001041", name:"シャトーメルシャン 甲州 750ml", category:"ワイン", unit:"本", cost:2200, price:5000 },
+  { id:"p49", jan:"4998603001058", name:"スパークリング ブリュット 750ml", category:"ワイン", unit:"本", cost:1800, price:4500 },
+  { id:"p50", jan:"3185370524015", name:"マルベック アルゼンチン 750ml", category:"ワイン", unit:"本", cost:1500, price:3800 },
+  { id:"p51", jan:"8004015100507", name:"キャンティ クラシコ 750ml", category:"ワイン", unit:"本", cost:2800, price:6000 },
+  { id:"p52", jan:"8052024410041", name:"バローロ 750ml", category:"ワイン", unit:"本", cost:4500, price:9000 },
+  { id:"p53", jan:"3250410011012", name:"コート・デュ・ローヌ 赤 750ml", category:"ワイン", unit:"本", cost:1600, price:4000 },
+  { id:"p54", jan:"9414676000193", name:"NZ ソーヴィニヨン・ブラン 750ml", category:"ワイン", unit:"本", cost:2000, price:5000 },
+  { id:"p55", jan:"3760038980018", name:"ブルゴーニュ ピノ・ノワール 750ml", category:"ワイン", unit:"本", cost:3800, price:8000 },
+  { id:"p56", jan:"3185370591002", name:"モエ・エ・シャンドン NV 750ml", category:"ワイン", unit:"本", cost:4500, price:9000 },
+  { id:"p57", jan:"3185370591019", name:"ヴーヴ・クリコ イエローラベル 750ml", category:"ワイン", unit:"本", cost:5500, price:11000 },
+  { id:"p58", jan:"4903086114015", name:"フレシネ コルドン・ネグロ 750ml", category:"ワイン", unit:"本", cost:1200, price:3200 },
+  { id:"p59", jan:"8411969012024", name:"バロン・デ・レイ テンプラニーリョ 750ml", category:"ワイン", unit:"本", cost:1400, price:3500 },
+  { id:"p60", jan:"4903086116019", name:"カレラ シャルドネ 750ml", category:"ワイン", unit:"本", cost:1600, price:4000 },
+  { id:"p61", jan:"4994566013109", name:"黒霧島 芋 900ml", category:"焼酎", unit:"本", cost:850, price:2200 },
+  { id:"p62", jan:"4994566013116", name:"赤霧島 芋 900ml", category:"焼酎", unit:"本", cost:1100, price:2800 },
+  { id:"p63", jan:"4994566013123", name:"白霧島 芋 900ml", category:"焼酎", unit:"本", cost:850, price:2200 },
+  { id:"p64", jan:"4994566013130", name:"茜霧島 芋 900ml", category:"焼酎", unit:"本", cost:1200, price:3000 },
+  { id:"p65", jan:"4980067100016", name:"伊佐美 芋 900ml", category:"焼酎", unit:"本", cost:1500, price:3500 },
+  { id:"p66", jan:"4970573027019", name:"田苑 麦 720ml", category:"焼酎", unit:"本", cost:1200, price:3000 },
+  { id:"p67", jan:"4904230002010", name:"二階堂 麦 900ml", category:"焼酎", unit:"本", cost:900, price:2200 },
+  { id:"p68", jan:"4904250007011", name:"鍛高譚 しそ 900ml", category:"焼酎", unit:"本", cost:900, price:2200 },
+  { id:"p69", jan:"4904930008010", name:"白岳 米 720ml", category:"焼酎", unit:"本", cost:1100, price:2800 },
+  { id:"p70", jan:"4902506100014", name:"残波 白 泡盛 750ml", category:"焼酎", unit:"本", cost:1200, price:3000 },
+  { id:"p71", jan:"4521417030034", name:"久保田 千寿 720ml", category:"日本酒", unit:"本", cost:1400, price:3500 },
+  { id:"p72", jan:"4521417030041", name:"久保田 碧寿 720ml", category:"日本酒", unit:"本", cost:2000, price:5000 },
+  { id:"p73", jan:"4537264000012", name:"獺祭 純米大吟醸 50 720ml", category:"日本酒", unit:"本", cost:1500, price:3800 },
+  { id:"p74", jan:"4537264000029", name:"獺祭 磨き三割九分 720ml", category:"日本酒", unit:"本", cost:2200, price:5500 },
+  { id:"p75", jan:"4904250031016", name:"八海山 純米大吟醸 720ml", category:"日本酒", unit:"本", cost:2500, price:6000 },
+  { id:"p76", jan:"4904930018019", name:"黒龍 特選吟醸 720ml", category:"日本酒", unit:"本", cost:1800, price:4500 },
+  { id:"p77", jan:"4903986003013", name:"上善如水 純米吟醸 720ml", category:"日本酒", unit:"本", cost:1200, price:3200 },
+  { id:"p78", jan:"4970013001013", name:"眞澄 辛口特別純米 720ml", category:"日本酒", unit:"本", cost:1400, price:3500 },
+  { id:"p79", jan:"4902506200013", name:"〆張鶴 雪 本醸造 720ml", category:"日本酒", unit:"本", cost:1100, price:2800 },
+  { id:"p80", jan:"4906750001012", name:"大関 上撰 本醸造 1800ml", category:"日本酒", unit:"本", cost:1600, price:4000 },
+  { id:"p81", jan:"4901777238016", name:"サントリー ほろよい 白いサワー 350ml", category:"缶チューハイ", unit:"缶", cost:120, price:500 },
+  { id:"p82", jan:"4901777238023", name:"サントリー -196° ストロングゼロ 350ml", category:"缶チューハイ", unit:"缶", cost:130, price:530 },
+  { id:"p83", jan:"4901411030016", name:"キリン 氷結 シチリアレモン 350ml", category:"缶チューハイ", unit:"缶", cost:125, price:510 },
+  { id:"p84", jan:"4901411030023", name:"キリン 氷結 グレープフルーツ 350ml", category:"缶チューハイ", unit:"缶", cost:125, price:510 },
+  { id:"p85", jan:"4904230053015", name:"アサヒ もぎたて 350ml", category:"缶チューハイ", unit:"缶", cost:120, price:500 },
+  { id:"p86", jan:"4901880963013", name:"サッポロ 99.99 350ml", category:"缶チューハイ", unit:"缶", cost:155, price:600 },
+  { id:"p87", jan:"4901351036126", name:"サントリー ハイボール缶 350ml", category:"缶チューハイ", unit:"缶", cost:140, price:550 },
+  { id:"p88", jan:"4901351036133", name:"コカ・コーラ 檸檬堂 350ml", category:"缶チューハイ", unit:"缶", cost:125, price:520 },
+  { id:"p89", jan:"4901777238030", name:"サントリー ゆずサワー 350ml", category:"缶チューハイ", unit:"缶", cost:120, price:500 },
+  { id:"p90", jan:"4901411030030", name:"キリン 本搾りチューハイ 350ml", category:"缶チューハイ", unit:"缶", cost:130, price:530 },
+  { id:"p91", jan:"4902102072601", name:"アサヒ クリアアサヒ 350ml", category:"缶チューハイ", unit:"缶", cost:110, price:480 },
+  { id:"p92", jan:"4902102072618", name:"コカ・コーラ 350ml缶", category:"ソフトドリンク", unit:"缶", cost:65, price:400 },
+  { id:"p93", jan:"4901777236012", name:"サントリー 天然水 500ml", category:"ソフトドリンク", unit:"本", cost:55, price:350 },
+  { id:"p94", jan:"4902102099003", name:"三ツ矢サイダー 350ml缶", category:"ソフトドリンク", unit:"缶", cost:65, price:400 },
+  { id:"p95", jan:"4901085064016", name:"サントリー BOSS 微糖 185g缶", category:"ソフトドリンク", unit:"缶", cost:80, price:400 },
+  { id:"p96", jan:"4908540101015", name:"ジンジャーエール 250ml缶", category:"ソフトドリンク", unit:"缶", cost:70, price:400 },
+  { id:"p97", jan:"5010666100015", name:"ゴードン ドライジン 700ml", category:"その他", unit:"本", cost:1800, price:3500 },
+  { id:"p98", jan:"5021349000012", name:"タンカレー ジン 750ml", category:"その他", unit:"本", cost:2800, price:5500 },
+  { id:"p99", jan:"4523091001018", name:"スミノフ ウォッカ 750ml", category:"その他", unit:"本", cost:1800, price:3500 },
+  { id:"p100", jan:"4902720027013", name:"バカルディ スペリオール ホワイトラム 750ml", category:"その他", unit:"本", cost:1800, price:3500 },
+  { id:"p101", jan:"4902506101011", name:"クエルボ シルバー テキーラ 750ml", category:"その他", unit:"本", cost:2200, price:4000 },
+  { id:"p102", jan:"7896067900012", name:"カルーア コーヒーリキュール 700ml", category:"その他", unit:"本", cost:1800, price:3500 },
+  { id:"p103", jan:"4523091115029", name:"マリブ ホワイトラム 700ml", category:"その他", unit:"本", cost:2000, price:3800 },
 ];
 
-const SEED_SESS = [{
-  id:"sess0", year:2026, month:5, name:"2026年05月棚卸し",
-  status:"completed", createdAt:"2026-05-31", completedAt:"2026-05-31",
-  counts:{ "4901777302180":8,"4904230013009":48,"4901411001016":36,
-           "4994566013109":6,"4901085641606":3,"4998603001027":5 }
-}];
+const SEED_SESS = [
+  { id:"sess_mar", year:2026, month:3, name:"2026年03月棚卸し",
+    status:"completed", createdAt:"2026-03-31", completedAt:"2026-03-31",
+    counts:{"4904230013009":60,"4904230014006":24,"4901411001016":48,"4901411001023":20,"4901880903019":36,"4901777211253":24,"4901055620016":18,"4560141460015":12,"4524110106002":10,"4562398580019":8,"4901777302180":14,"4901777302075":10,"4901085641606":6,"4901085641590":4,"4901085641613":3,"4904230701019":2,"4904230810017":5,"4904230401016":8,"5010314310101":4,"5000299213734":6,"5000289026108":5,"4901045140018":8,"4523091056018":4,"5000267024007":6,"4998603001027":9,"4998603001034":8,"4998603001041":4,"3185370524015":5,"3185370591002":3,"3185370591019":2,"4903086114015":6,"4994566013109":10,"4994566013116":6,"4994566013123":8,"4994566013130":4,"4904230002010":6,"4521417030034":8,"4537264000012":6,"4537264000029":4,"4904250031016":3,"4901777238016":24,"4901777238023":20,"4901411030016":18,"4901411030023":16,"4901351036126":20,"4901777211260":12,"4901055620023":8,"4901085641644":1,"5010326031027":3,"4523091001018":4,"4902720027013":3,"5010666100015":4,"4901085641651":4,"4904930008010":4,"4521417030041":3,"4906750001012":3} },
+  { id:"sess_apr", year:2026, month:4, name:"2026年04月棚卸し",
+    status:"completed", createdAt:"2026-04-30", completedAt:"2026-04-30",
+    counts:{"4904230013009":54,"4904230014006":20,"4901411001016":42,"4901411001023":17,"4901880903019":32,"4901777211253":20,"4901055620016":16,"4560141460015":10,"4524110106002":9,"4562398580019":7,"4901777302180":11,"4901777302075":8,"4901085641606":4,"4901085641590":3,"4901085641613":2,"4904230701019":2,"4904230810017":4,"4904230401016":7,"5010314310101":3,"5000299213734":5,"5000289026108":4,"4901045140018":7,"4523091056018":3,"5000267024007":5,"4998603001027":7,"4998603001034":7,"4998603001041":3,"3185370524015":4,"3185370591002":2,"3185370591019":2,"4903086114015":5,"4994566013109":8,"4994566013116":5,"4994566013123":7,"4994566013130":3,"4904230002010":5,"4521417030034":7,"4537264000012":5,"4537264000029":3,"4904250031016":3,"4901777238016":20,"4901777238023":18,"4901411030016":16,"4901411030023":14,"4901351036126":18,"4901777211260":10,"4901055620023":7,"4901085641644":1,"5010326031027":2,"4523091001018":3,"4902720027013":3,"5010666100015":3,"4901085641651":3,"4904930008010":3,"4521417030041":2,"4906750001012":3} },
+  { id:"sess0", year:2026, month:5, name:"2026年05月棚卸し",
+    status:"completed", createdAt:"2026-05-31", completedAt:"2026-05-31",
+    counts:{"4904230013009":48,"4904230014006":18,"4901411001016":36,"4901411001023":15,"4901880903019":28,"4901777211253":16,"4901055620016":14,"4560141460015":8,"4524110106002":8,"4562398580019":6,"4901777302180":8,"4901777302075":6,"4901085641606":3,"4901085641590":2,"4901085641613":2,"4904230701019":1,"4904230810017":3,"4904230401016":6,"5010314310101":3,"5000299213734":4,"5000289026108":4,"4901045140018":6,"4523091056018":3,"5000267024007":4,"4998603001027":5,"4998603001034":5,"4998603001041":3,"3185370524015":3,"3185370591002":2,"3185370591019":1,"4903086114015":4,"4994566013109":6,"4994566013116":4,"4994566013123":6,"4994566013130":3,"4904230002010":4,"4521417030034":6,"4537264000012":4,"4537264000029":3,"4904250031016":2,"4901777238016":18,"4901777238023":15,"4901411030016":14,"4901411030023":12,"4901351036126":16,"4901777211260":8,"4901055620023":6,"4901085641644":1,"5010326031027":2,"4523091001018":3,"4902720027013":2,"5010666100015":3,"4901085641651":2,"4904930008010":3,"4521417030041":2,"4906750001012":2} },
+];
 
 const SEED_SALES = [
-  { id:"d1", date:"2026-03-31", year:2026, month:3,
-    items:[
-      {jan:"4901777302180",name:"角瓶",category:"ウイスキー",unit:"本",qty:8,price:3500,subtotal:28000},
-      {jan:"4904230013009",name:"スーパードライ",category:"ビール",unit:"缶",qty:30,price:550,subtotal:16500},
-      {jan:"4998603001027",name:"メルシャン",category:"ワイン",unit:"本",qty:4,price:2800,subtotal:11200},
-      {jan:"4994566013109",name:"黒霧島",category:"焼酎",unit:"本",qty:5,price:2200,subtotal:11000},
-    ], total:66700 },
-  { id:"d2", date:"2026-04-30", year:2026, month:4,
-    items:[
-      {jan:"4901777302180",name:"角瓶",category:"ウイスキー",unit:"本",qty:10,price:3500,subtotal:35000},
-      {jan:"4901085641606",name:"山崎12年",category:"ウイスキー",unit:"本",qty:2,price:8000,subtotal:16000},
-      {jan:"4904230013009",name:"スーパードライ",category:"ビール",unit:"缶",qty:24,price:550,subtotal:13200},
-      {jan:"4994566013109",name:"黒霧島",category:"焼酎",unit:"本",qty:6,price:2200,subtotal:13200},
-    ], total:77400 },
-  { id:"d3", date:"2026-05-31", year:2026, month:5,
-    items:[
-      {jan:"4901777302180",name:"角瓶",category:"ウイスキー",unit:"本",qty:12,price:3500,subtotal:42000},
-      {jan:"4901085641606",name:"山崎12年",category:"ウイスキー",unit:"本",qty:3,price:8000,subtotal:24000},
-      {jan:"4904230013009",name:"スーパードライ",category:"ビール",unit:"缶",qty:36,price:550,subtotal:19800},
-      {jan:"4998603001027",name:"メルシャン",category:"ワイン",unit:"本",qty:5,price:2800,subtotal:14000},
-    ], total:99800 },
-  { id:"d4", date:"2026-06-03", year:2026, month:6,
-    items:[
-      {jan:"4901777302180",name:"角瓶",category:"ウイスキー",unit:"本",qty:5,price:3500,subtotal:17500},
-      {jan:"4904230013009",name:"スーパードライ",category:"ビール",unit:"缶",qty:18,price:550,subtotal:9900},
-    ], total:27400 },
+  { id:"d1", date:"2026-03-31", year:2026, month:3, customers:42, total:66700 },
+  { id:"d2", date:"2026-04-30", year:2026, month:4, customers:58, total:77400 },
+  { id:"d3", date:"2026-05-31", year:2026, month:5, customers:71, total:99800 },
+  { id:"d4", date:"2026-06-03", year:2026, month:6, customers:18, total:27400 },
 ];
-
 const MOCK_API = {
   "4901777302075": { name:"サントリー 白角 700ml",    category:"ウイスキー"   },
   "4901045140018": { name:"ジャックダニエル 700ml",   category:"ウイスキー"   },
@@ -93,6 +172,11 @@ const now  = () => new Date().toISOString().slice(0,10);
 const mlab = (y,m) => `${y}年${String(m).padStart(2,"0")}月`;
 const yen  = n => "¥" + Math.round(n||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
 const fmtQ = v => { const n=+v; return isNaN(n)?"":Number.isInteger(n)?String(n):String(n); };
+const yenAbbr = n => {
+  if(!n||n===0)return "";
+  if(n>=10000)return `¥${n>=100000?Math.round(n/10000):(n/10000).toFixed(1)}万`;
+  return `¥${n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",")}`;
+};
 
 /* ── localStorage helpers ── */
 const load = (k,fb) => { try{ const v=localStorage.getItem(k); return v?JSON.parse(v):fb; }catch{ return fb; } };
@@ -125,10 +209,14 @@ export default function App() {
 
   // ── localStorage から読み込む（初回はサンプルデータ）──
   useEffect(()=>{
-    setProducts(load("bar:p", SEED_P));
-    setSessions(load("bar:s", SEED_SESS));
+    const sp = load("bar:p", null);
+    const ss = load("bar:s", null);
+    const sl = load("bar:sales", null);
+    // 古いデータ（6商品以下 / 旧形式）はSEEDで上書き
+    setProducts(sp && sp.length >= 100 ? sp : SEED_P);
+    setSessions(ss && ss.filter(x=>x.status==="completed").length >= 3 ? ss : SEED_SESS);
     setActiveId(load("bar:a", null));
-    setSales(load("bar:sales", SEED_SALES));
+    setSales(sl && sl[0] && !sl[0].items ? sl : SEED_SALES);
     setReady(true);
   },[]);
 
@@ -182,7 +270,7 @@ export default function App() {
       <style>{`
         .fdp{font-family:'Playfair Display',serif} .fdpi{font-family:'Playfair Display',serif;font-style:italic}
         *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-        input,select{color:${Z.txt};background:transparent;font-family:inherit}
+        input,select{color:${Z.txt};background:transparent;font-family:inherit;font-size:16px}
         input[type=number]::-webkit-inner-spin-button{opacity:1}
         input::placeholder{color:${Z.fnt}} input:focus,select:focus,button:focus{outline:none}
         button{cursor:pointer;border:none;padding:0;background:none}
@@ -230,6 +318,7 @@ export default function App() {
 function DashboardTab({products,sessions,sales,active,onStart,onNav}){
   const d=new Date(); const cy=d.getFullYear(), cm=d.getMonth()+1;
   const prevM=cm===1?{y:cy-1,m:12}:{y:cy,m:cm-1};
+
   const monthlySales=useMemo(()=>{
     const map={};
     sales.forEach(e=>{const k=`${e.year}-${e.month}`;map[k]=(map[k]||0)+(e.total||0);});
@@ -238,9 +327,35 @@ function DashboardTab({products,sessions,sales,active,onStart,onNav}){
       return{name:`${dd.getMonth()+1}月`,売上:map[`${dd.getFullYear()}-${dd.getMonth()+1}`]||0};
     }).reverse();
   },[sales,cy,cm]);
+
+  // 在庫評価額推移（売上チャートと同じく直近6ヶ月固定）
+  const inventoryHistory=useMemo(()=>{
+    const map={};
+    sessions.filter(s=>s.status==="completed").forEach(s=>{
+      const value=Object.entries(s.counts).reduce((sum,[jan,qty])=>{
+        const p=products.find(x=>x.jan===jan);
+        return sum+(p?.cost||0)*(parseFloat(qty)||0);
+      },0);
+      map[`${s.year}-${s.month}`]=value;
+    });
+    return Array.from({length:6},(_,i)=>{
+      const dd=new Date(cy,cm-1-i,1);
+      const k=`${dd.getFullYear()}-${dd.getMonth()+1}`;
+      return{name:`${dd.getMonth()+1}月`,value:map[k]||0};
+    }).reverse();
+  },[sessions,products]);
+
   const thisMonthTotal=sales.filter(e=>e.year===cy&&e.month===cm).reduce((s,e)=>s+(e.total||0),0);
   const lastMonthTotal=sales.filter(e=>e.year===prevM.y&&e.month===prevM.m).reduce((s,e)=>s+(e.total||0),0);
   const pct=lastMonthTotal>0?((thisMonthTotal-lastMonthTotal)/lastMonthTotal*100).toFixed(1):null;
+
+  // 客単価（今月→直近月にフォールバック）
+  const thisMonthCustomers=sales.filter(e=>e.year===cy&&e.month===cm).reduce((s,e)=>s+(e.customers||0),0);
+  const thisUnit=thisMonthCustomers>0?Math.round(thisMonthTotal/thisMonthCustomers):null;
+  const recentEntry=[...sales].sort((a,b)=>a.year!==b.year?b.year-a.year:b.month-a.month).find(e=>e.customers);
+  const displayUnit=thisUnit||(recentEntry?Math.round(recentEntry.total/recentEntry.customers):null);
+  const unitLabel=thisUnit?"今月":(recentEntry?`${recentEntry.year}年${recentEntry.month}月`:null);
+
   const latestSess=sessions.filter(s=>s.status==="completed").at(-1);
   const catStock=useMemo(()=>{
     if(!latestSess)return[];
@@ -251,17 +366,16 @@ function DashboardTab({products,sessions,sales,active,onStart,onNav}){
     });
     return Object.entries(map).map(([name,数量])=>({name,数量})).sort((a,b)=>b.数量-a.数量);
   },[latestSess,products]);
+
   const catSales=useMemo(()=>{
     const map={};
-    sales.filter(e=>e.year===cy&&e.month===cm).forEach(e=>e.items.forEach(it=>{
-      const cat=it.category||"その他";
-      map[cat]=(map[cat]||0)+(it.subtotal||0);
-    }));
+    sales.filter(e=>e.year===cy&&e.month===cm).forEach(e=>{
+      if(!e.items)return;
+      e.items.forEach(it=>{const cat=it.category||"その他";map[cat]=(map[cat]||0)+(it.subtotal||0);});
+    });
     return Object.entries(map).map(([name,売上])=>({name,売上})).sort((a,b)=>b.売上-a.売上);
   },[sales,cy,cm]);
-  const invValue=latestSess?Object.entries(latestSess.counts).reduce((s,[jan,qty])=>{
-    const p=products.find(x=>x.jan===jan);return s+(p?.cost||0)*(parseFloat(qty)||0);
-  },0):0;
+
   const exportInventoryCSV=()=>{
     if(!latestSess)return;
     const rows=Object.entries(latestSess.counts).map(([jan,qty])=>{
@@ -270,6 +384,7 @@ function DashboardTab({products,sessions,sales,active,onStart,onNav}){
     });
     downloadCSV(["日付","商品名","JANコード","カテゴリ","単位","数量","仕入単価(円)","在庫金額(円)"],rows,`bar_luce_inventory_${latestSess.completedAt}.csv`);
   };
+
   return(
     <div>
       <div style={{background:Z.white,padding:"32px 20px 20px",borderBottom:`1px solid ${Z.bdr}`}}>
@@ -290,29 +405,53 @@ function DashboardTab({products,sessions,sales,active,onStart,onNav}){
             <ChevronRight size={16} style={{color:Z.amb}}/>
           </button>
         )}
+
+        {/* KPIカード: 今月売上 + 客単価 */}
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-          {[
-            {label:"今月の売上",value:yen(thisMonthTotal),sub:pct!=null?`前月比 ${pct>0?"+":""}${pct}%`:null},
-            {label:"在庫評価額",value:yen(invValue),sub:latestSess?`${latestSess.name}時点`:null},
-          ].map(({label,value,sub})=>(
-            <div key={label} style={{background:Z.white,border:`1px solid ${Z.bdr}`,borderRadius:12,padding:14,boxShadow:Z.sh}}>
-              <p style={{color:Z.mut,fontSize:11,margin:"0 0 4px"}}>{label}</p>
-              <p style={{color:Z.amb,fontSize:20,fontWeight:700,margin:"0 0 2px"}}>{value}</p>
-              {sub&&<p style={{color:Z.mut,fontSize:11,margin:0}}>{sub}</p>}
-            </div>
-          ))}
+          <div style={{background:Z.white,border:`1px solid ${Z.bdr}`,borderRadius:12,padding:14,boxShadow:Z.sh}}>
+            <p style={{color:Z.mut,fontSize:11,margin:"0 0 4px"}}>今月の売上</p>
+            <p style={{color:Z.amb,fontSize:20,fontWeight:700,margin:"0 0 2px"}}>{yen(thisMonthTotal)}</p>
+            {pct!=null&&<p style={{color:Z.mut,fontSize:11,margin:0}}>前月比 {pct>0?"+":""}{pct}%</p>}
+          </div>
+          <div style={{background:Z.white,border:`1px solid ${Z.bdr}`,borderRadius:12,padding:14,boxShadow:Z.sh}}>
+            <p style={{color:Z.mut,fontSize:11,margin:"0 0 4px"}}>客単価</p>
+            <p style={{color:Z.amb,fontSize:20,fontWeight:700,margin:"0 0 2px"}}>{displayUnit?yen(displayUnit):"—"}</p>
+            {unitLabel&&<p style={{color:Z.mut,fontSize:11,margin:0}}>{unitLabel}</p>}
+          </div>
         </div>
+
+        {/* 月別売上推移 */}
         <div style={{background:Z.white,border:`1px solid ${Z.bdr}`,borderRadius:14,padding:16,boxShadow:Z.sh}}>
           <p style={{color:Z.txt,fontSize:13,fontWeight:600,margin:"0 0 12px"}}>月別売上推移</p>
-          <ResponsiveContainer width="100%" height={160}>
-            <BarChart data={monthlySales} margin={{top:4,right:4,bottom:0,left:0}}>
+          <ResponsiveContainer width="100%" height={185}>
+            <BarChart data={monthlySales} margin={{top:22,right:4,bottom:0,left:0}}>
               <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize:11,fill:Z.mut}}/>
               <YAxis hide={true}/>
               <Tooltip formatter={v=>[yen(v),"売上"]} contentStyle={{border:"none",borderRadius:10,boxShadow:"0 4px 12px rgba(0,0,0,.1)",fontSize:12}} cursor={{fill:"rgba(0,0,0,.04)"}}/>
-              <Bar dataKey="売上" fill={Z.amb} radius={[4,4,0,0]}/>
+              <Bar dataKey="売上" fill={Z.amb} radius={[4,4,0,0]}
+                label={{position:"top",fontSize:9,fill:Z.mut,formatter:v=>yenAbbr(v)}}/>
             </BarChart>
           </ResponsiveContainer>
         </div>
+
+        {/* 在庫評価額推移（直近6ヶ月） */}
+        {(
+          <div style={{background:Z.white,border:`1px solid ${Z.bdr}`,borderRadius:14,padding:16,boxShadow:Z.sh}}>
+            <p style={{color:Z.txt,fontSize:13,fontWeight:600,margin:"0 0 4px"}}>在庫評価額推移</p>
+            <p style={{color:"#475569",fontSize:22,fontWeight:700,margin:"0 0 14px"}}>{yen(inventoryHistory.at(-1)?.value||0)}</p>
+            <ResponsiveContainer width="100%" height={175}>
+              <BarChart data={inventoryHistory} margin={{top:22,right:4,bottom:0,left:0}}>
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize:11,fill:Z.mut}}/>
+                <YAxis hide={true}/>
+                <Tooltip formatter={v=>[yen(v),"在庫評価額"]} contentStyle={{border:"none",borderRadius:10,boxShadow:"0 4px 12px rgba(0,0,0,.1)",fontSize:12}} cursor={{fill:"rgba(0,0,0,.04)"}}/>
+                <Bar dataKey="value" fill="#64748b" radius={[4,4,0,0]}
+                  label={{position:"top",fontSize:9,fill:Z.mut,formatter:v=>yenAbbr(v)}}/>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+
+        {/* カテゴリ別在庫 */}
         {catStock.length>0&&(
           <div style={{background:Z.white,border:`1px solid ${Z.bdr}`,borderRadius:14,padding:16,boxShadow:Z.sh}}>
             <p style={{color:Z.txt,fontSize:13,fontWeight:600,margin:"0 0 12px"}}>在庫数 カテゴリ別<span style={{color:Z.mut,fontSize:11,fontWeight:400,marginLeft:6}}>{latestSess?.name}</span></p>
@@ -328,6 +467,7 @@ function DashboardTab({products,sessions,sales,active,onStart,onNav}){
             </ResponsiveContainer>
           </div>
         )}
+
         {catSales.length>0&&(
           <div style={{background:Z.white,border:`1px solid ${Z.bdr}`,borderRadius:14,padding:16,boxShadow:Z.sh}}>
             <p style={{color:Z.txt,fontSize:13,fontWeight:600,margin:"0 0 12px"}}>今月の売上 カテゴリ別</p>
@@ -343,6 +483,7 @@ function DashboardTab({products,sessions,sales,active,onStart,onNav}){
             </ResponsiveContainer>
           </div>
         )}
+
         {!active&&(
           <button onClick={onStart} style={{background:Z.amb,borderRadius:12,padding:13,display:"flex",alignItems:"center",justifyContent:"space-between",width:"100%",textAlign:"left",boxShadow:"0 2px 8px rgba(217,119,6,.25)"}}>
             <div><p style={{color:"rgba(255,255,255,.7)",fontSize:11,fontWeight:500,margin:"0 0 2px"}}>今月の棚卸しを開始</p><p style={{color:"#fff",fontWeight:700,fontSize:16,margin:0}}>新規セッション作成</p></div>
@@ -353,10 +494,6 @@ function DashboardTab({products,sessions,sales,active,onStart,onNav}){
     </div>
   );
 }
-
-/* ═══════════════════════════════════════════════════════════
-   PRODUCTS
-═══════════════════════════════════════════════════════════ */
 function ProductsTab({products,onAdd,onDel}){
   const [q,setQ]=useState(""); const [cat,setCat]=useState("すべて");
   const [camera,setCamera]=useState(false); const [modal,setModal]=useState(null);
@@ -432,9 +569,17 @@ function CameraScanner({onScan,onClose}){
     const start=async()=>{
       try{
         // 動的インポート: Safari含む全ブラウザ対応
-        const {Html5Qrcode}=await import('html5-qrcode');
+        // CDN から動的に読み込む（npmパッケージ不要・Safari対応）
+        if(!window.Html5Qrcode){
+          await new Promise((res,rej)=>{
+            const s=document.createElement("script");
+            s.src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js";
+            s.onload=res; s.onerror=()=>rej(new Error("load failed"));
+            document.head.appendChild(s);
+          });
+        }
         if(!mounted)return;
-        const scanner=new Html5Qrcode(READER_ID);
+        const scanner=new window.Html5Qrcode(READER_ID);
         scannerRef.current=scanner;
         await scanner.start(
           {facingMode:"environment"},
@@ -582,7 +727,7 @@ function InventoryTab({products,sessions,session,onAdd,onCount,onComplete,onStar
               <button onClick={()=>setCamera(true)} style={{background:Z.amb,color:Z.white,borderRadius:10,width:44,height:44,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><Camera size={18}/></button>
               <div style={{flex:1,background:Z.white,border:`1px solid ${Z.bdr}`,borderRadius:10,display:"flex",alignItems:"center",padding:"0 12px",gap:8,boxShadow:Z.sh}}>
                 <ScanLine size={14} style={{color:Z.fnt}}/>
-                <input ref={inputRef} value={jan} onChange={e=>setJan(e.target.value)} onKeyDown={e=>e.key==="Enter"&&lookup(jan)} placeholder="スキャンまたはJANコードを入力..." autoFocus style={{flex:1,padding:"11px 0",fontSize:13,fontFamily:"monospace",border:"none"}}/>
+                <input ref={inputRef} value={jan} onChange={e=>setJan(e.target.value)} onKeyDown={e=>e.key==="Enter"&&lookup(jan)} placeholder="スキャンまたはJANコードを入力..." autoFocus style={{flex:1,padding:"11px 0",fontSize:16,fontFamily:"monospace",border:"none"}}/>
               </div>
               <button onClick={()=>lookup(jan)} style={{background:Z.txt,color:Z.white,borderRadius:10,padding:"0 14px",fontWeight:600,fontSize:13,flexShrink:0}}>検索</button>
             </div>
@@ -709,8 +854,18 @@ function SalesTab({products,sales,onAdd,onDel}){
   const nextM=()=>{ if(month===12){setYear(y=>y+1);setMonth(1);}else setMonth(m=>m+1); };
   const entries=sales.filter(e=>e.year===year&&e.month===month).sort((a,b)=>b.date.localeCompare(a.date));
   const total=entries.reduce((s,e)=>s+(e.total||0),0);
-  const exportCSV=()=>{ const rows=[];entries.forEach(e=>e.items.forEach(it=>rows.push([e.date,it.name,it.jan||"",it.category||"",fmtQ(it.qty),it.price||"",it.subtotal||""])));downloadCSV(["日付","商品名","JANコード","カテゴリ","数量","売値(円)","売上金額(円)"],rows,`bar_luce_sales_${year}${String(month).padStart(2,"0")}.csv`); };
-  const exportAll=()=>{ const rows=[];[...sales].sort((a,b)=>a.date.localeCompare(b.date)).forEach(e=>e.items.forEach(it=>rows.push([e.date,it.name,it.jan||"",it.category||"",fmtQ(it.qty),it.price||"",it.subtotal||""])));downloadCSV(["日付","商品名","JANコード","カテゴリ","数量","売値(円)","売上金額(円)"],rows,"bar_luce_sales_all.csv"); };
+  const totalCustomers=entries.reduce((s,e)=>s+(e.customers||0),0);
+  const avgUnit=totalCustomers>0?Math.round(total/totalCustomers):0;
+
+  const exportCSV=()=>{
+    const rows=entries.map(e=>[e.date,e.customers||"",e.total||"",e.customers?Math.round(e.total/e.customers):""])
+    downloadCSV(["日付","客数(人)","売上高(円)","客単価(円)"],rows,`bar_luce_sales_${year}${String(month).padStart(2,"00")}.csv`);
+  };
+  const exportAll=()=>{
+    const rows=[...sales].sort((a,b)=>a.date.localeCompare(b.date)).map(e=>[e.date,e.customers||"",e.total||"",e.customers?Math.round(e.total/e.customers):""])
+    downloadCSV(["日付","客数(人)","売上高(円)","客単価(円)"],rows,"bar_luce_sales_all.csv");
+  };
+
   return(
     <div>
       <div style={{padding:"32px 20px 16px",borderBottom:`1px solid ${Z.bdr}`,background:Z.white}}>
@@ -724,79 +879,96 @@ function SalesTab({products,sales,onAdd,onDel}){
       </div>
       <div style={{padding:"14px 20px",display:"flex",flexDirection:"column",gap:12}}>
         <div style={{background:Z.white,border:`1px solid ${Z.bdr}`,borderRadius:14,padding:"16px 20px",boxShadow:Z.sh}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-            <div><p style={{color:Z.mut,fontSize:12,margin:"0 0 4px"}}>月間売上合計</p><p style={{color:Z.amb,fontSize:28,fontWeight:700,margin:0}}>{yen(total)}</p><p style={{color:Z.mut,fontSize:12,margin:"2px 0 0"}}>{entries.length}件 · {entries.reduce((s,e)=>s+(e.items?.length||0),0)}商品</p></div>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+            <div>
+              <p style={{color:Z.mut,fontSize:12,margin:"0 0 4px"}}>月間売上合計</p>
+              <p style={{color:Z.amb,fontSize:28,fontWeight:700,margin:"0 0 8px"}}>{yen(total)}</p>
+              <div style={{display:"flex",gap:16}}>
+                {totalCustomers>0&&<span style={{color:Z.mut,fontSize:12}}>客数 {totalCustomers}人</span>}
+                {avgUnit>0&&<span style={{color:Z.ambDk,fontSize:12,fontWeight:600}}>客単価 {yen(avgUnit)}</span>}
+              </div>
+            </div>
             <button onClick={exportCSV} style={{display:"flex",alignItems:"center",gap:5,background:Z.ambL,border:`1px solid ${Z.ambBdr}`,borderRadius:9,padding:"8px 12px",fontSize:12,fontWeight:600,color:Z.ambDk}}><Download size={13}/> CSV</button>
           </div>
         </div>
         <button onClick={()=>setShowEntry(true)} style={{width:"100%",background:Z.amb,borderRadius:12,padding:13,display:"flex",alignItems:"center",justifyContent:"space-between",boxShadow:"0 2px 8px rgba(217,119,6,.2)"}}><span style={{color:"#fff",fontWeight:700,fontSize:14}}>売上を登録する</span><Plus size={20} style={{color:"rgba(255,255,255,.7)"}}/></button>
-        {entries.length===0&&<div style={{textAlign:"center",padding:"40px 0",color:Z.fnt}}><TrendingUp size={30} style={{margin:"0 auto 8px",opacity:.35}}/><p style={{fontSize:13,margin:0}}>{mlab(year,month)}の売上記録はありません</p></div>}
-        {entries.map(e=>(
-          <div key={e.id} style={{background:Z.white,border:`1px solid ${Z.bdr}`,borderRadius:12,padding:"14px 16px",boxShadow:Z.sh}}>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}><div><p style={{fontWeight:600,fontSize:15,margin:"0 0 2px"}}>{yen(e.total)}</p><p style={{color:Z.mut,fontSize:12,margin:0}}>{e.date} · {e.items.length}商品</p></div><button onClick={()=>onDel(e.id)} style={{color:Z.fnt,marginTop:2}}><Trash2 size={14}/></button></div>
-            <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-              {e.items.slice(0,4).map((it,i)=><span key={i} style={{background:Z.sur,border:`1px solid ${Z.bdr}`,borderRadius:6,padding:"2px 8px",fontSize:11,color:Z.mut}}>{it.name.length>10?it.name.slice(0,10)+"…":it.name} ×{fmtQ(it.qty)}</span>)}
-              {e.items.length>4&&<span style={{fontSize:11,color:Z.fnt}}>+{e.items.length-4}件</span>}
+        {entries.length===0&&(
+          <div style={{textAlign:"center",padding:"40px 0",color:Z.fnt}}><TrendingUp size={30} style={{margin:"0 auto 8px",opacity:.35}}/><p style={{fontSize:13,margin:0}}>{mlab(year,month)}の売上記録はありません</p></div>
+        )}
+        {entries.map(e=>{
+          const unit=e.customers&&e.customers>0?Math.round(e.total/e.customers):null;
+          return(
+            <div key={e.id} style={{background:Z.white,border:`1px solid ${Z.bdr}`,borderRadius:12,padding:"14px 16px",boxShadow:Z.sh}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:e.customers?8:0}}>
+                <div>
+                  <p style={{fontWeight:600,fontSize:18,margin:"0 0 2px"}}>{yen(e.total)}</p>
+                  <p style={{color:Z.mut,fontSize:12,margin:0}}>{e.date}</p>
+                </div>
+                <button onClick={()=>onDel(e.id)} style={{color:Z.fnt}}><Trash2 size={14}/></button>
+              </div>
+              {e.customers&&(
+                <div style={{display:"flex",gap:20,paddingTop:8,borderTop:`1px solid ${Z.bdr}`}}>
+                  <span style={{color:Z.mut,fontSize:13}}>👥 {e.customers}人</span>
+                  {unit&&<span style={{color:Z.ambDk,fontSize:13,fontWeight:600}}>客単価 {yen(unit)}</span>}
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
-      {showEntry&&<SalesEntryModal products={products} defaultDate={`${year}-${String(month).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`} onClose={()=>setShowEntry(false)} onSave={e=>{onAdd(e);setShowEntry(false);setYear(new Date(e.date).getFullYear());setMonth(new Date(e.date).getMonth()+1);}}/>}
+      {showEntry&&<SalesEntryModal
+        defaultDate={`${year}-${String(month).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
+        onClose={()=>setShowEntry(false)}
+        onSave={e=>{onAdd(e);setShowEntry(false);setYear(new Date(e.date).getFullYear());setMonth(new Date(e.date).getMonth()+1);}}/>}
     </div>
   );
 }
-function SalesEntryModal({products,defaultDate,onClose,onSave}){
-  const [date,setDate]=useState(defaultDate||now()); const [items,setItems]=useState([]); const [showPicker,setShowPicker]=useState(false); const [pickerQ,setPickerQ]=useState("");
-  const total=items.reduce((s,it)=>s+(it.subtotal||0),0);
-  const addItem=p=>{setItems(v=>[...v,{jan:p.jan,name:p.name,category:p.category,unit:p.unit||"本",qty:"1",price:String(p.price||""),subtotal:p.price||0}]);setShowPicker(false);setPickerQ("");};
-  const updateItem=(i,k,v)=>{setItems(prev=>prev.map((it,idx)=>{if(idx!==i)return it;const updated={...it,[k]:v};if(k==="qty"||k==="price"){const q=parseFloat(updated.qty)||0,p=parseFloat(updated.price)||0;updated.subtotal=Math.round(q*p);}return updated;}));};
-  const removeItem=i=>setItems(v=>v.filter((_,idx)=>idx!==i));
-  const save=()=>{if(items.length===0)return;const d=new Date(date);onSave({id:uid(),date,year:d.getFullYear(),month:d.getMonth()+1,items:items.map(it=>({...it,qty:parseFloat(it.qty)||0,price:parseFloat(it.price)||0})),total});};
-  const filteredP=products.filter(p=>!pickerQ||p.name.includes(pickerQ)||p.jan.includes(pickerQ));
+function SalesEntryModal({defaultDate,onClose,onSave}){
+  const [date,setDate]=useState(defaultDate||now());
+  const [customers,setCustomers]=useState("");
+  const [amount,setAmount]=useState("");
+  const unit=+customers>0&&+amount>0?Math.round(+amount/+customers):null;
+  const ok=+customers>0&&+amount>0;
+  const save=()=>{
+    if(!ok)return;
+    const d=new Date(date);
+    onSave({id:uid(),date,year:d.getFullYear(),month:d.getMonth()+1,customers:+customers,total:+amount});
+  };
   return(
     <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.45)",zIndex:100,display:"flex",flexDirection:"column",justifyContent:"flex-end"}}>
-      <div style={{background:Z.white,borderRadius:"20px 20px 0 0",maxHeight:"92vh",display:"flex",flexDirection:"column"}}>
-        <div style={{padding:"20px 20px 0",display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}><h3 className="fdp" style={{fontSize:20,margin:0}}>売上登録</h3><button onClick={onClose}><X size={18} style={{color:Z.mut}}/></button></div>
-        <div style={{padding:"14px 20px 0",flexShrink:0}}><label style={{color:Z.mut,fontSize:12,display:"block",marginBottom:3}}>日付</label><input type="date" value={date} onChange={e=>setDate(e.target.value)} style={{background:Z.sur,border:`1px solid ${Z.bdr}`,borderRadius:10,padding:"9px 12px",fontSize:13,display:"block",width:"100%"}}/></div>
-        <div style={{flex:1,overflowY:"auto",padding:"14px 20px"}}>
-          {items.length===0&&!showPicker&&<div style={{textAlign:"center",padding:"24px 0",color:Z.fnt,border:`2px dashed ${Z.bdr}`,borderRadius:12}}><p style={{margin:0,fontSize:13}}>商品を追加してください</p></div>}
-          {items.map((it,i)=>(
-            <div key={i} style={{background:Z.sur,border:`1px solid ${Z.bdr}`,borderRadius:12,padding:12,marginBottom:8}}>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}><p style={{fontWeight:500,fontSize:13,margin:0,flex:1,paddingRight:8}}>{it.name}</p><button onClick={()=>removeItem(i)} style={{color:Z.fnt}}><X size={14}/></button></div>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-                {[{k:"qty",l:"数量",p:"1"},{k:"price",l:`売値（${it.unit}）`,p:"0"}].map(({k,l,p})=>(
-                  <div key={k}><label style={{color:Z.mut,fontSize:11,display:"block",marginBottom:2}}>{l}</label><input type="number" inputMode="decimal" step="any" min="0" value={it[k]} onChange={e=>updateItem(i,k,e.target.value)} placeholder={p} style={{width:"100%",background:Z.white,border:`1px solid ${Z.bdr}`,borderRadius:8,padding:"8px 10px",fontSize:13}}/></div>
-                ))}
-              </div>
-              <p style={{color:Z.amb,fontWeight:700,fontSize:14,margin:"6px 0 0",textAlign:"right"}}>小計: {yen(it.subtotal)}</p>
-            </div>
-          ))}
-          <button onClick={()=>setShowPicker(true)} style={{width:"100%",background:Z.white,border:`1px dashed ${Z.bdr}`,borderRadius:12,padding:11,display:"flex",alignItems:"center",justifyContent:"center",gap:8,color:Z.mut,fontSize:13,fontWeight:500}}><Plus size={16}/> 商品を追加</button>
+      <div style={{background:Z.white,borderRadius:"20px 20px 0 0",padding:"20px 20px 36px"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+          <h3 className="fdp" style={{fontSize:20,margin:0}}>売上登録</h3>
+          <button onClick={onClose}><X size={18} style={{color:Z.mut}}/></button>
         </div>
-        <div style={{padding:"12px 20px 24px",borderTop:`1px solid ${Z.bdr}`,flexShrink:0,background:Z.white}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}><span style={{fontWeight:600,fontSize:15}}>合計</span><span style={{color:Z.amb,fontWeight:700,fontSize:22}}>{yen(total)}</span></div>
-          <button onClick={save} disabled={items.length===0} style={{width:"100%",background:items.length>0?Z.amb:Z.sur,color:items.length>0?Z.white:Z.fnt,borderRadius:12,padding:"13px 0",fontWeight:700,fontSize:14,border:"none"}}>保存する</button>
+        <div style={{marginBottom:16}}>
+          <label style={{color:Z.mut,fontSize:12,display:"block",marginBottom:4}}>日付</label>
+          <input type="date" value={date} onChange={e=>setDate(e.target.value)}
+            style={{width:"100%",background:Z.sur,border:`1px solid ${Z.bdr}`,borderRadius:10,padding:"10px 12px",fontSize:16,display:"block"}}/>
         </div>
-      </div>
-      {showPicker&&(
-        <div style={{position:"absolute",inset:0,zIndex:10,display:"flex",flexDirection:"column",justifyContent:"flex-end"}} onClick={()=>setShowPicker(false)}>
-          <div style={{background:Z.white,borderRadius:"20px 20px 0 0",maxHeight:"65vh",display:"flex",flexDirection:"column"}} onClick={e=>e.stopPropagation()}>
-            <div style={{padding:"16px 20px 10px",flexShrink:0}}>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}><p style={{fontWeight:600,fontSize:14,margin:0}}>商品を選択</p><button onClick={()=>setShowPicker(false)}><X size={16} style={{color:Z.mut}}/></button></div>
-              <div style={{background:Z.sur,border:`1px solid ${Z.bdr}`,borderRadius:10,display:"flex",alignItems:"center",padding:"0 10px",gap:8}}><Search size={13} style={{color:Z.fnt}}/><input value={pickerQ} onChange={e=>setPickerQ(e.target.value)} placeholder="商品名で検索..." autoFocus style={{flex:1,padding:"9px 0",fontSize:13,border:"none"}}/></div>
-            </div>
-            <div style={{flex:1,overflowY:"auto",padding:"0 20px 20px",display:"flex",flexDirection:"column",gap:6}}>
-              {filteredP.map(p=>(
-                <button key={p.id} onClick={()=>addItem(p)} style={{background:Z.white,border:`1px solid ${Z.bdr}`,borderRadius:10,padding:"10px 14px",textAlign:"left",display:"flex",justifyContent:"space-between",alignItems:"center",boxShadow:Z.sh}}>
-                  <div><p style={{fontWeight:500,fontSize:13,margin:"0 0 2px"}}>{p.name}</p><span style={{...(CAT[p.category]??CAT["その他"]),fontSize:10,padding:"1px 6px",borderRadius:9999}}>{p.category}</span></div>
-                  {p.price&&<span style={{color:Z.amb,fontWeight:600,fontSize:13}}>{yen(p.price)}</span>}
-                </button>
-              ))}
-              {filteredP.length===0&&<p style={{textAlign:"center",color:Z.fnt,fontSize:13,padding:"20px 0"}}>商品が見つかりません</p>}
-            </div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:16}}>
+          <div>
+            <label style={{color:Z.mut,fontSize:12,display:"block",marginBottom:4}}>客数（人）</label>
+            <input type="number" inputMode="numeric" min="1" value={customers} onChange={e=>setCustomers(e.target.value)} placeholder="25"
+              style={{width:"100%",background:Z.sur,border:`1px solid ${Z.bdr}`,borderRadius:10,padding:"10px 12px",fontSize:16,display:"block",fontWeight:600}}/>
+          </div>
+          <div>
+            <label style={{color:Z.mut,fontSize:12,display:"block",marginBottom:4}}>売上高（円）</label>
+            <input type="number" inputMode="numeric" min="0" value={amount} onChange={e=>setAmount(e.target.value)} placeholder="48000"
+              style={{width:"100%",background:Z.sur,border:`1px solid ${Z.bdr}`,borderRadius:10,padding:"10px 12px",fontSize:16,display:"block",fontWeight:600}}/>
           </div>
         </div>
-      )}
+        {unit&&(
+          <div style={{background:Z.ambL,border:`1px solid ${Z.ambBdr}`,borderRadius:12,padding:"14px 16px",marginBottom:16,textAlign:"center"}}>
+            <p style={{color:Z.mut,fontSize:12,margin:"0 0 4px"}}>客単価（自動計算）</p>
+            <p style={{color:Z.ambDk,fontSize:32,fontWeight:700,margin:0,letterSpacing:"-0.02em"}}>{yen(unit)}</p>
+          </div>
+        )}
+        <button onClick={save} disabled={!ok}
+          style={{width:"100%",background:ok?Z.amb:Z.sur,color:ok?Z.white:Z.fnt,borderRadius:12,padding:"14px 0",fontWeight:700,fontSize:14,border:"none"}}>
+          保存する
+        </button>
+      </div>
     </div>
   );
 }
