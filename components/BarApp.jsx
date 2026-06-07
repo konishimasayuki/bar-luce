@@ -981,118 +981,106 @@ function SalesEntryModal({defaultDate,onClose,onSave}){
 }
 
 /* ═══════════════════════════════════════════════════════════
-   MANUAL ADD SHEET（棚卸し手動追加）
+   MANUAL ADD SHEET (棚卸し手動入力)
 ═══════════════════════════════════════════════════════════ */
 function ManualAddSheet({products,session,onCount,onClose}){
-  const [q,setQ]   =useState("");
-  const [sel,setSel]=useState(null);
-  const [qty,setQty]=useState("");
-  const qtyRef=useRef();
-
-  useEffect(()=>{if(sel)setTimeout(()=>qtyRef.current?.focus(),80);},[sel]);
-
+  const [q,setQ]=useState("");
   const filtered=products.filter(p=>!q||p.name.includes(q)||p.jan.includes(q));
-
-  const commit=()=>{
-    const v=parseFloat(qty);
-    if(!session||isNaN(v)||v<0||!sel)return;
-    onCount(session.id,sel.jan,v);
-    setSel(null); setQty("");
-  };
-
   return(
     <div style={{position:"fixed",inset:0,zIndex:100,background:"rgba(0,0,0,.45)",
       display:"flex",flexDirection:"column",justifyContent:"flex-end"}}
-      onClick={e=>{if(!sel&&e.target===e.currentTarget)onClose();}}>  
-      <div style={{background:Z.bg,borderRadius:"20px 20px 0 0",maxHeight:"88vh",display:"flex",flexDirection:"column"}}
+      onClick={onClose}>
+      <div style={{background:Z.bg,borderRadius:"20px 20px 0 0",maxHeight:"90vh",
+        display:"flex",flexDirection:"column"}}
         onClick={e=>e.stopPropagation()}>
 
-        {!sel?(
-          <>
-            {/* ── 商品選択フェーズ ── */}
-            <div style={{background:Z.white,borderRadius:"20px 20px 0 0",padding:"16px 20px 0",flexShrink:0,borderBottom:`1px solid ${Z.bdr}`}}>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-                <h3 className="fdp" style={{fontSize:19,margin:0}}>商品を選択</h3>
-                <button onClick={onClose}><X size={18} style={{color:Z.mut}}/></button>
-              </div>
-              <div style={{background:Z.sur,border:`1px solid ${Z.bdr}`,borderRadius:12,display:"flex",alignItems:"center",padding:"0 12px",gap:8,marginBottom:12}}>
-                <Search size={14} style={{color:Z.fnt}}/>
-                <input value={q} onChange={e=>setQ(e.target.value)} placeholder="商品名で検索..." autoFocus
-                  style={{flex:1,padding:"10px 0",fontSize:16,border:"none"}}/>
-                {q&&<button onClick={()=>setQ("")}><X size={14} style={{color:Z.fnt}}/></button>}
-              </div>
-            </div>
-
-            <div style={{flex:1,overflowY:"auto",paddingBottom:20}}>
-              {q?(
-                <>
-                  {filtered.length===0&&<p style={{textAlign:"center",padding:"32px 0",color:Z.fnt,fontSize:13}}>商品が見つかりません</p>}
-                  {filtered.map(p=><PRow key={p.id} p={p} session={session} onSelect={setSel}/>)}
-                </>
-              ):(
-                CATEGORIES.map(cat=>{
-                  const items=products.filter(x=>x.category===cat);
-                  if(!items.length)return null;
-                  return(
-                    <div key={cat}>
-                      <p style={{padding:"12px 20px 4px",color:Z.mut,fontSize:11,fontWeight:600,
-                        letterSpacing:"0.08em",textTransform:"uppercase",margin:0,background:Z.bg}}>{cat}</p>
-                      {items.map(p=><PRow key={p.id} p={p} session={session} onSelect={setSel}/>)}
-                    </div>
-                  );
-                })
-              )}
-            </div>
-          </>
-        ):(
-          <div style={{background:Z.white,borderRadius:"20px 20px 0 0",padding:"20px 20px 36px",display:"flex",flexDirection:"column",gap:16}}>
-            <button onClick={()=>{setSel(null);setQty("")}}
-              style={{display:"flex",alignItems:"center",gap:6,color:Z.mut,fontSize:13,alignSelf:"flex-start"}}>
-              <ArrowLeft size={15}/> 商品リストに戻る
-            </button>
+        <div style={{background:Z.white,borderRadius:"20px 20px 0 0",padding:"16px 20px 0",
+          flexShrink:0,borderBottom:`1px solid ${Z.bdr}`}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12}}>
             <div>
-              <p style={{fontWeight:600,fontSize:16,margin:"0 0 6px",lineHeight:1.3}}>{sel.name}</p>
-              <div style={{display:"flex",alignItems:"center",gap:8}}>
-                <span style={{...(CAT[sel.category]??CAT["その他"]),fontSize:10,padding:"2px 8px",borderRadius:9999,fontWeight:500}}>{sel.category}</span>
-                {session?.counts?.[sel.jan]!=null&&(
-                  <span style={{color:Z.mut,fontSize:12}}>現在の記録: {session.counts[sel.jan]}{sel.unit}</span>
-                )}
-              </div>
+              <h3 className="fdp" style={{fontSize:19,margin:"0 0 3px"}}>手動入力</h3>
+              <p style={{color:Z.mut,fontSize:11,margin:0}}>数量を入力してフォーカスを外すと自動保存</p>
             </div>
-            <div>
-              <label style={{color:Z.mut,fontSize:12,display:"block",marginBottom:6}}>数量（{sel.unit}）</label>
-              <input ref={qtyRef} type="number" inputMode="decimal" step="any" min="0"
-                value={qty} onChange={e=>setQty(e.target.value)} onKeyDown={e=>e.key==="Enter"&&commit()}
-                placeholder="0"
-                style={{width:"100%",background:Z.sur,border:`1px solid ${Z.bdr}`,borderRadius:12,
-                  padding:"14px 16px",fontSize:32,fontWeight:700,textAlign:"center",display:"block"}}/>
-            </div>
-            <button onClick={commit} disabled={!qty||parseFloat(qty)<0}
-              style={{width:"100%",background:qty&&parseFloat(qty)>=0?Z.okTxt:Z.sur,
-                color:qty&&parseFloat(qty)>=0?Z.white:Z.fnt,borderRadius:12,padding:"14px 0",fontWeight:700,fontSize:14,border:"none"}}>
-              記録する
-            </button>
+            <button onClick={onClose}><X size={18} style={{color:Z.mut}}/></button>
           </div>
-        )}
+          <div style={{background:Z.sur,border:`1px solid ${Z.bdr}`,borderRadius:12,
+            display:"flex",alignItems:"center",padding:"0 12px",gap:8,marginBottom:12}}>
+            <Search size={14} style={{color:Z.fnt}}/>
+            <input value={q} onChange={e=>setQ(e.target.value)}
+              placeholder="商品名で検索..." autoFocus
+              style={{flex:1,padding:"10px 0",fontSize:16,border:"none"}}/>
+            {q&&<button onClick={()=>setQ("")}><X size={14} style={{color:Z.fnt}}/></button>}
+          </div>
+        </div>
+
+        <div style={{flex:1,overflowY:"auto",paddingBottom:20}}>
+          {q?(
+            <>
+              {filtered.length===0&&(
+                <p style={{textAlign:"center",padding:"32px 0",color:Z.fnt,fontSize:13}}>
+                  商品が見つかりません
+                </p>
+              )}
+              {filtered.map(p=>(
+                <PInputRow key={p.id} p={p} session={session} onCount={onCount}/>
+              ))}
+            </>
+          ):(
+            CATEGORIES.map(cat=>{
+              const items=products.filter(x=>x.category===cat);
+              if(!items.length)return null;
+              return(
+                <div key={cat}>
+                  <p style={{padding:"10px 20px 4px",color:Z.mut,fontSize:11,fontWeight:600,
+                    letterSpacing:"0.08em",textTransform:"uppercase",margin:0,background:Z.bg}}>
+                    {cat}
+                  </p>
+                  {items.map(p=>(
+                    <PInputRow key={p.id} p={p} session={session} onCount={onCount}/>
+                  ))}
+                </div>
+              );
+            })
+          )}
+        </div>
       </div>
     </div>
   );
 }
 
-/* ── 商品行（ManualAddSheet 内） ── */
-function PRow({p,session,onSelect}){
+function PInputRow({p,session,onCount}){
+  const init=session?.counts?.[p.jan];
+  const [v,setV]=useState(init!=null?String(init):"");
+  const has=v!==""&&!isNaN(parseFloat(v))&&parseFloat(v)>0;
   const cs=CAT[p.category]??CAT["その他"];
-  const cur=session?.counts?.[p.jan];
+  const commit=()=>{
+    if(!session)return;
+    const n=parseFloat(v);
+    onCount(session.id,p.jan,isNaN(n)?0:n);
+  };
   return(
-    <button onClick={()=>onSelect(p)}
-      style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"10px 20px",
-        textAlign:"left",background:Z.white,borderBottom:`1px solid ${Z.bdr}`}}>
+    <div style={{display:"flex",alignItems:"center",gap:10,padding:"9px 20px",
+      background:Z.white,borderBottom:`1px solid ${Z.bdr}`}}>
       <div style={{flex:1,minWidth:0}}>
-        <p style={{fontWeight:500,fontSize:14,margin:"0 0 3px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{p.name}</p>
-        <span style={{background:cs.bg,color:cs.color,fontSize:10,padding:"1px 7px",borderRadius:9999,fontWeight:500}}>{p.category}</span>
+        <p style={{fontWeight:500,fontSize:13,margin:"0 0 3px",overflow:"hidden",
+          textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{p.name}</p>
+        <span style={{background:cs.bg,color:cs.color,fontSize:10,
+          padding:"1px 7px",borderRadius:9999,fontWeight:500}}>{p.category}</span>
       </div>
-      {cur!=null&&<span style={{color:Z.amb,fontWeight:700,fontSize:13,flexShrink:0}}>{cur}{p.unit}</span>}
-      <ChevronRight size={14} style={{color:Z.fnt,flexShrink:0}}/>
-    </button>
+      <input type="number" inputMode="decimal" step="any" min="0"
+        value={v}
+        onChange={e=>setV(e.target.value)}
+        onBlur={commit}
+        onKeyDown={e=>e.key==="Enter"&&commit()}
+        placeholder="—"
+        style={{
+          width:64,textAlign:"center",fontSize:15,fontWeight:700,
+          background:has?Z.ambL:Z.sur,
+          color:has?Z.ambDk:Z.fnt,
+          border:`1px solid ${has?Z.ambBdr:Z.bdr}`,
+          borderRadius:8,padding:"6px 4px"
+        }}/>
+      <span style={{color:Z.fnt,fontSize:11,width:16,flexShrink:0}}>{p.unit}</span>
+    </div>
   );
 }
