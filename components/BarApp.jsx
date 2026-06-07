@@ -692,7 +692,7 @@ function AddModal({onClose,onAdd,prefill={}}){
 function InventoryTab({products,sessions,session,onAdd,onCount,onComplete,onStart,onUpdateSession}){
   const [jan,setJan]=useState(""); const [scan,setScan]=useState(null);
   const [qtyInput,setQtyInput]=useState(""); const [prefill,setPrefill]=useState(null);
-  const [camera,setCamera]=useState(false); const [detail,setDetail]=useState(null);
+  const [camera,setCamera]=useState(false); const [detail,setDetail]=useState(null); const [showManual,setShowManual]=useState(false);
   const inputRef=useRef();
   if(detail){ const sess=sessions.find(s=>s.id===detail); return <SessionDetail session={sess} products={products} onBack={()=>setDetail(null)} onUpdate={onUpdateSession}/>; }
   const lookup=async code=>{
@@ -732,6 +732,12 @@ function InventoryTab({products,sessions,session,onAdd,onCount,onComplete,onStar
               <button onClick={()=>lookup(jan)} style={{background:Z.txt,color:Z.white,borderRadius:10,padding:"0 14px",fontWeight:600,fontSize:13,flexShrink:0}}>検索</button>
             </div>
             <p style={{color:Z.fnt,fontSize:11,margin:"5px 0 0"}}>テスト用 JANコード: <span style={{fontFamily:"monospace",color:Z.mut}}>4901777302180</span>（登録済）· <span style={{fontFamily:"monospace",color:Z.mut}}>4901777302075</span>（DB検索）</p>
+          <button onClick={()=>setShowManual(true)}
+            style={{marginTop:8,width:"100%",display:"flex",alignItems:"center",justifyContent:"center",gap:8,
+              background:Z.white,border:`1px solid ${Z.bdr}`,borderRadius:10,padding:"10px 0",
+              fontSize:13,fontWeight:500,color:Z.mut,boxShadow:Z.sh}}>
+            <Package size={15}/> 商品リストから手動で追加
+          </button>
           </div>
           {scan&&(
             <div style={{margin:"12px 20px 0",borderRadius:12,border:"1px solid",overflow:"hidden",
@@ -797,6 +803,7 @@ function InventoryTab({products,sessions,session,onAdd,onCount,onComplete,onStar
       )}
       {camera&&<CameraScanner onScan={jan=>{setCamera(false);lookup(jan)}} onClose={()=>setCamera(false)}/>}
       {prefill&&<AddModal prefill={prefill} onClose={()=>setPrefill(null)} onAdd={p=>{onAdd(p);onCount(session.id,p.jan,1);setPrefill(null);setScan(null);setTimeout(()=>inputRef.current?.focus(),60);}}/>}
+      {showManual&&<ManualAddSheet products={products} session={session} onCount={onCount} onClose={()=>setShowManual(false)}/>}
     </div>
   );
 }
@@ -970,5 +977,122 @@ function SalesEntryModal({defaultDate,onClose,onSave}){
         </button>
       </div>
     </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MANUAL ADD SHEET（棚卸し手動追加）
+═══════════════════════════════════════════════════════════ */
+function ManualAddSheet({products,session,onCount,onClose}){
+  const [q,setQ]   =useState("");
+  const [sel,setSel]=useState(null);
+  const [qty,setQty]=useState("");
+  const qtyRef=useRef();
+
+  useEffect(()=>{if(sel)setTimeout(()=>qtyRef.current?.focus(),80);},[sel]);
+
+  const filtered=products.filter(p=>!q||p.name.includes(q)||p.jan.includes(q));
+
+  const commit=()=>{
+    const v=parseFloat(qty);
+    if(!session||isNaN(v)||v<0||!sel)return;
+    onCount(session.id,sel.jan,v);
+    setSel(null); setQty("");
+  };
+
+  return(
+    <div style={{position:"fixed",inset:0,zIndex:100,background:"rgba(0,0,0,.45)",
+      display:"flex",flexDirection:"column",justifyContent:"flex-end"}}
+      onClick={e=>{if(!sel&&e.target===e.currentTarget)onClose();}}>  
+      <div style={{background:Z.bg,borderRadius:"20px 20px 0 0",maxHeight:"88vh",display:"flex",flexDirection:"column"}}
+        onClick={e=>e.stopPropagation()}>
+
+        {!sel?(
+          <>
+            {/* ── 商品選択フェーズ ── */}
+            <div style={{background:Z.white,borderRadius:"20px 20px 0 0",padding:"16px 20px 0",flexShrink:0,borderBottom:`1px solid ${Z.bdr}`}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+                <h3 className="fdp" style={{fontSize:19,margin:0}}>商品を選択</h3>
+                <button onClick={onClose}><X size={18} style={{color:Z.mut}}/></button>
+              </div>
+              <div style={{background:Z.sur,border:`1px solid ${Z.bdr}`,borderRadius:12,display:"flex",alignItems:"center",padding:"0 12px",gap:8,marginBottom:12}}>
+                <Search size={14} style={{color:Z.fnt}}/>
+                <input value={q} onChange={e=>setQ(e.target.value)} placeholder="商品名で検索..." autoFocus
+                  style={{flex:1,padding:"10px 0",fontSize:16,border:"none"}}/>
+                {q&&<button onClick={()=>setQ("")}><X size={14} style={{color:Z.fnt}}/></button>}
+              </div>
+            </div>
+
+            <div style={{flex:1,overflowY:"auto",paddingBottom:20}}>
+              {q?(
+                <>
+                  {filtered.length===0&&<p style={{textAlign:"center",padding:"32px 0",color:Z.fnt,fontSize:13}}>商品が見つかりません</p>}
+                  {filtered.map(p=><PRow key={p.id} p={p} session={session} onSelect={setSel}/>)}
+                </>
+              ):(
+                CATEGORIES.map(cat=>{
+                  const items=products.filter(x=>x.category===cat);
+                  if(!items.length)return null;
+                  return(
+                    <div key={cat}>
+                      <p style={{padding:"12px 20px 4px",color:Z.mut,fontSize:11,fontWeight:600,
+                        letterSpacing:"0.08em",textTransform:"uppercase",margin:0,background:Z.bg}}>{cat}</p>
+                      {items.map(p=><PRow key={p.id} p={p} session={session} onSelect={setSel}/>)}
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </>
+        ):(
+          <div style={{background:Z.white,borderRadius:"20px 20px 0 0",padding:"20px 20px 36px",display:"flex",flexDirection:"column",gap:16}}>
+            <button onClick={()=>{setSel(null);setQty("")}}
+              style={{display:"flex",alignItems:"center",gap:6,color:Z.mut,fontSize:13,alignSelf:"flex-start"}}>
+              <ArrowLeft size={15}/> 商品リストに戻る
+            </button>
+            <div>
+              <p style={{fontWeight:600,fontSize:16,margin:"0 0 6px",lineHeight:1.3}}>{sel.name}</p>
+              <div style={{display:"flex",alignItems:"center",gap:8}}>
+                <span style={{...(CAT[sel.category]??CAT["その他"]),fontSize:10,padding:"2px 8px",borderRadius:9999,fontWeight:500}}>{sel.category}</span>
+                {session?.counts?.[sel.jan]!=null&&(
+                  <span style={{color:Z.mut,fontSize:12}}>現在の記録: {session.counts[sel.jan]}{sel.unit}</span>
+                )}
+              </div>
+            </div>
+            <div>
+              <label style={{color:Z.mut,fontSize:12,display:"block",marginBottom:6}}>数量（{sel.unit}）</label>
+              <input ref={qtyRef} type="number" inputMode="decimal" step="any" min="0"
+                value={qty} onChange={e=>setQty(e.target.value)} onKeyDown={e=>e.key==="Enter"&&commit()}
+                placeholder="0"
+                style={{width:"100%",background:Z.sur,border:`1px solid ${Z.bdr}`,borderRadius:12,
+                  padding:"14px 16px",fontSize:32,fontWeight:700,textAlign:"center",display:"block"}}/>
+            </div>
+            <button onClick={commit} disabled={!qty||parseFloat(qty)<0}
+              style={{width:"100%",background:qty&&parseFloat(qty)>=0?Z.okTxt:Z.sur,
+                color:qty&&parseFloat(qty)>=0?Z.white:Z.fnt,borderRadius:12,padding:"14px 0",fontWeight:700,fontSize:14,border:"none"}}>
+              記録する
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ── 商品行（ManualAddSheet 内） ── */
+function PRow({p,session,onSelect}){
+  const cs=CAT[p.category]??CAT["その他"];
+  const cur=session?.counts?.[p.jan];
+  return(
+    <button onClick={()=>onSelect(p)}
+      style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"10px 20px",
+        textAlign:"left",background:Z.white,borderBottom:`1px solid ${Z.bdr}`}}>
+      <div style={{flex:1,minWidth:0}}>
+        <p style={{fontWeight:500,fontSize:14,margin:"0 0 3px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{p.name}</p>
+        <span style={{background:cs.bg,color:cs.color,fontSize:10,padding:"1px 7px",borderRadius:9999,fontWeight:500}}>{p.category}</span>
+      </div>
+      {cur!=null&&<span style={{color:Z.amb,fontWeight:700,fontSize:13,flexShrink:0}}>{cur}{p.unit}</span>}
+      <ChevronRight size={14} style={{color:Z.fnt,flexShrink:0}}/>
+    </button>
   );
 }
